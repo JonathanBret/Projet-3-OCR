@@ -223,6 +223,37 @@ li:hover {
 	margin-bottom: 1em;
 }
 
+#filter {
+	display: flex;
+	justify-content: space-around;
+	width: 55%;
+	justify-items: center;
+	padding-left: 24%;
+	padding-bottom: 4%;
+}
+
+#filter>li {
+	font-size: 16px;
+	border: 1px solid #1D6154;
+	border-radius: 25px;
+	padding: 2% 4% 2% 4%;
+	color: #1D6154;
+	font-weight: 600;
+}
+
+#filter :hover {
+	background-color: #1D6154;
+}
+
+#filter>li>button:hover {
+	color: white;
+}
+
+#filter>li>button {
+	border: none;
+	background-color: white;
+}
+
 .gallery {
 	width: 100%;
 	display: grid;
@@ -234,6 +265,10 @@ li:hover {
 .gallery img {
 	width: 100%;
 
+}
+
+.gallery-item {
+	width: 100%;
 }
 
 #contact {
