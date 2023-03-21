@@ -245,13 +245,18 @@ li:hover {
 	background-color: #1D6154;
 }
 
-#filter>li>button:hover {
-	color: white;
-}
 
 #filter>li>button {
 	border: none;
 	background-color: white;
+}
+
+#filter li:hover button {
+	background-color: #1D6154;
+}
+
+#filter li:hover button {
+	color: white;
 }
 
 .gallery {
