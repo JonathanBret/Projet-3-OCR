@@ -75,3 +75,41 @@ const init = async () => {
 init();
 
 
+//login opérationnel
+
+const loginForm = document.getElementById('login');
+
+loginForm.addEventListener('submit', function(event) {
+event.preventDefault(); // Empêche l'envoi du formulaire par défaut
+
+// Obtenez les valeurs des champs email et password
+const email = document.getElementById('email').value;
+const password = document.getElementById('password').value;
+
+// Créez un objet pour stocker les données d'identification
+const credentials = {
+email: email,
+password: password
+};
+
+// Envoyer une requête POST à l'API avec les données d'identification
+fetch('http://localhost:5678/api/users/login', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(credentials)
+})
+.then(response => {
+if (response.ok) {
+// Si la réponse est réussie, redirigez l'utilisateur vers la page d'accueil
+window.location.href = 'index.html';
+} else {
+// Sinon, affichez un message d'erreur
+throw new Error('Identifiants incorrects');
+}
+})
+.catch(error => {
+console.error(error);
+});
+});
