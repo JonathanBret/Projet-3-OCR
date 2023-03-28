@@ -77,6 +77,11 @@ init();
 
 //login opérationnel
 
+const authorizedUsers = [{
+  email: "sophie.bluel@test.tld",
+  password: "S0phie"
+}, ];
+
 const loginForm = document.getElementById('login');
 
 loginForm.addEventListener('submit', function (event) {
@@ -90,21 +95,22 @@ loginForm.addEventListener('submit', function (event) {
     password: password
   };
 
-  fetch('http://localhost:5678/api/users/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
-    })
-    .then(response => {
-      if (response.ok) {
-        window.location.href = 'index.html';
-      } else {
-        alert('Identifiants incorrects');
-      }
-    })
-    .catch(error => {
-      console.error(error);
+  const authorizedUser = authorizedUsers.find(user => user.email === email && user.password === password);
+
+  if (authorizedUser) {
+    window.location.href = 'index.html';
+    console.log(authorizedUser)
+
+    const elements = document.querySelectorAll('.edit');
+
+    elements.forEach(element => {
+      const editButton = document.createElement('button');
+      editButton.textContent = 'Modifier';
+      editButton.classList.add('edit');
+      element.appendChild(editButton);
     });
+
+  } else {
+    alert('Identifiants incorrects');
+  }
 });
