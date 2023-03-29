@@ -491,10 +491,12 @@ footer nav ul {
 	margin-left: 25%;
 	margin-bottom: 5%;
 	margin-top: 5%;
+	cursor: pointer;
 }
 
 .delete-all {
 	border: none;
 	background-color: white;
 	color: red;
+	cursor: pointer;
 }

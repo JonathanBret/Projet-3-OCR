@@ -137,12 +137,13 @@ if (authorizedUser) {
 
 //modale
 const editButtons = document.querySelectorAll('.edit');
+const addPhotosButton = document.querySelector('.add-photos');
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('images');
+const addPhotosModal = document.getElementById('add-photos-modal');
 
 editButtons.forEach(editButton => {
   editButton.addEventListener('click', function () {
-    const modal = document.getElementById('modal');
-    const modalContent = document.getElementById('images');
-
     modalContent.innerHTML = '';
 
     const images = document.querySelectorAll('.gallery-item img');
@@ -158,18 +159,8 @@ editButtons.forEach(editButton => {
       const deleteIcon = document.createElement('i');
       deleteIcon.classList.add('fas', 'fa-trash');
       deleteIcon.addEventListener('click', function () {
-        const imageContainer = event.target.parentNode;
-        imageContainer.remove();
-
-        const imageSrc = img.src;
-        const galleryItems = document.querySelectorAll('.gallery-item');
-
-        galleryItems.forEach(galleryItem => {
-          const galleryImg = galleryItem.querySelector('img');
-          if (galleryImg.src === imageSrc) {
-            galleryItem.remove();
-          }
-        });
+        const image = event.target.parentNode;
+        image.remove();
       });
       imageContainer.appendChild(deleteIcon);
 
@@ -177,11 +168,17 @@ editButtons.forEach(editButton => {
     });
 
     modal.style.display = 'block';
-
-    const closeIcon = document.querySelector('.close');
-
-    closeIcon.addEventListener('click', function () {
-      modal.style.display = 'none';
-    });
   });
+});
+
+addPhotosButton.addEventListener('click', function () {
+  modal.style.display = 'none';
+  addPhotosModal.style.display = 'block';
+});
+
+const addPhotosModalCloseButton = addPhotosModal.querySelector('.close');
+
+addPhotosModalCloseButton.addEventListener('click', function () {
+  addPhotosModal.style.display = 'none';
+  modal.style.display = 'block';
 });
