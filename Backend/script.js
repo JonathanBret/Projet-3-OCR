@@ -134,3 +134,53 @@ if (authorizedUser) {
 } else {
   alert('Accès non autorisé');
 }
+
+const editButtons = document.querySelectorAll('.edit');
+
+editButtons.forEach(editButton => {
+  editButton.addEventListener('click', function () {
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('images');
+
+    modalContent.innerHTML = '';
+
+    const images = document.querySelectorAll('.gallery-item img');
+
+    images.forEach(image => {
+      const imageContainer = document.createElement('div');
+      imageContainer.classList.add('image-container');
+
+      const img = document.createElement('img');
+      img.src = image.src;
+      imageContainer.appendChild(img);
+
+      const deleteIcon = document.createElement('i');
+      deleteIcon.classList.add('fas', 'fa-trash');
+      deleteIcon.addEventListener('click', function () {
+
+        const deleteButtons = document.querySelectorAll('.delete');
+
+        function deleteImage(event) {
+          const image = event.target.parentNode;
+          image.remove();
+        }
+
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', deleteImage);
+        });
+
+      });
+      imageContainer.appendChild(deleteIcon);
+
+      modalContent.appendChild(imageContainer);
+    });
+
+    modal.style.display = 'block';
+
+    const closeIcon = document.querySelector('.close');
+
+    closeIcon.addEventListener('click', function () {
+      modal.style.display = 'none';
+    });
+  });
+});

@@ -394,7 +394,107 @@ footer nav ul {
 	margin: 2em
 }
 
+.edit {
+	display: flex;
+}
+
 .edit>button {
 	border: none;
 	background-color: white;
+	padding-left: 25px;
+	cursor: pointer;
+}
+
+#portfolio>h2 {
+	justify-content: center;
+	padding-right: 50px;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+	display: flex;
+	flex-direction: column;
+	background-color: #fefefe;
+	margin: 10% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 40%;
+	height: 80%;
+}
+
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+#images {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	height: 70%;
+	margin-left: 7%;
+	border-bottom: 1px solid grey;
+}
+
+.image-container {
+	flex-basis: 20%;
+	margin: 10px;
+	position: relative;
+}
+
+.image-container>img {
+	max-width: 100%;
+	height: auto;
+}
+
+.image-container i {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background-color: black;
+	color: white;
+	padding: 5px;
+}
+
+.image-container i:hover {
+	cursor: pointer;
+}
+
+.add-photos {
+	background-color: #1D6154;
+	border: none;
+	width: 50%;
+	color: white;
+	border-radius: 10px;
+	height: 4%;
+	margin-left: 25%;
+	margin-bottom: 5%;
+	margin-top: 5%;
+}
+
+.delete-all {
+	border: none;
+	background-color: white;
+	color: red;
 }
