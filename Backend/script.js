@@ -135,6 +135,7 @@ if (authorizedUser) {
   alert('Accès non autorisé');
 }
 
+//modale
 const editButtons = document.querySelectorAll('.edit');
 
 editButtons.forEach(editButton => {
@@ -157,18 +158,18 @@ editButtons.forEach(editButton => {
       const deleteIcon = document.createElement('i');
       deleteIcon.classList.add('fas', 'fa-trash');
       deleteIcon.addEventListener('click', function () {
+        const imageContainer = event.target.parentNode;
+        imageContainer.remove();
 
-        const deleteButtons = document.querySelectorAll('.delete');
+        const imageSrc = img.src;
+        const galleryItems = document.querySelectorAll('.gallery-item');
 
-        function deleteImage(event) {
-          const image = event.target.parentNode;
-          image.remove();
-        }
-
-        deleteButtons.forEach(button => {
-          button.addEventListener('click', deleteImage);
+        galleryItems.forEach(galleryItem => {
+          const galleryImg = galleryItem.querySelector('img');
+          if (galleryImg.src === imageSrc) {
+            galleryItem.remove();
+          }
         });
-
       });
       imageContainer.appendChild(deleteIcon);
 
