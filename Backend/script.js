@@ -76,41 +76,61 @@ init();
 
 
 //login opérationnel
+const authorizedUser = JSON.parse(localStorage.getItem('authorizedUser'));
 
-const authorizedUsers = [{
-  email: "sophie.bluel@test.tld",
-  password: "S0phie"
-}, ];
+if (authorizedUser) {
+  console.log(authorizedUser);
 
-const loginForm = document.getElementById('login');
+  const elements = document.querySelectorAll('.edit');
 
-loginForm.addEventListener('submit', function (event) {
-  event.preventDefault();
+  elements.forEach(element => {
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Modifier';
+    editButton.classList.add('edit');
+    element.appendChild(editButton);
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+    const icon = document.createElement('i');
+    icon.classList.add('fa-pen-square');
+    element.appendChild(icon);
 
-  const credentials = {
-    email: email,
-    password: password
-  };
+    const toolbar = document.createElement('div');
+    toolbar.style.width = '100%';
+    toolbar.style.backgroundColor = 'black';
+    toolbar.style.color = 'white';
+    toolbar.style.display = 'none';
+    toolbar.style.justifyContent = 'center';
+    toolbar.style.alignItems = 'center';
+    toolbar.style.position = 'fixed';
+    toolbar.style.top = '0';
+    toolbar.style.padding = '10px';
 
-  const authorizedUser = authorizedUsers.find(user => user.email === email && user.password === password);
 
-  if (authorizedUser) {
-    window.location.href = 'index.html';
-    console.log(authorizedUser)
+    const modeEdition = document.createElement('button');
+    modeEdition.style.paddingRight = '50px'
+    modeEdition.style.border = 'none'
+    modeEdition.style.backgroundColor = 'black'
+    modeEdition.style.color = "white"
+    modeEdition.style.fontSize = '16px'
+    modeEdition.style.width = '10%'
+    modeEdition.style.cursor = 'pointer'
+    modeEdition.textContent = 'Mode édition';
+    toolbar.appendChild(modeEdition);
 
-    const elements = document.querySelectorAll('.edit');
+    const publierChangements = document.createElement('button');
+    publierChangements.style.padding = '7px'
+    publierChangements.style.backgroundColor = 'white'
+    publierChangements.style.borderRadius = '15px'
+    publierChangements.style.width = '12%'
+    publierChangements.textContent = 'Publier les changements';
+    toolbar.appendChild(publierChangements);
 
-    elements.forEach(element => {
-      const editButton = document.createElement('button');
-      editButton.textContent = 'Modifier';
-      editButton.classList.add('edit');
-      element.appendChild(editButton);
-    });
+    document.body.appendChild(toolbar);
 
-  } else {
-    alert('Identifiants incorrects');
-  }
-});
+    toolbar.style.display = 'flex';
+
+
+  });
+
+} else {
+  alert('Accès non autorisé');
+}

@@ -147,7 +147,8 @@ body {
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px 0;
+	margin-top: 80px
 }
 
 section {
@@ -393,6 +394,7 @@ footer nav ul {
 	margin: 2em
 }
 
-html>body>img {
-	width: ;
+.edit>button {
+	border: none;
+	background-color: white;
 }
