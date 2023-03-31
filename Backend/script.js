@@ -160,7 +160,14 @@ editButtons.forEach(editButton => {
       deleteIcon.classList.add('fas', 'fa-trash');
       deleteIcon.addEventListener('click', function () {
         const image = event.target.parentNode;
+        const imageSrc = image.querySelector('img').src;
         image.remove();
+        const mainImages = document.querySelectorAll('.gallery-item img');
+        mainImages.forEach(mainImage => {
+          if (mainImage.src === imageSrc) {
+            mainImage.parentNode.remove();
+          }
+        });
       });
       imageContainer.appendChild(deleteIcon);
 
@@ -181,4 +188,32 @@ const addPhotosModalCloseButton = addPhotosModal.querySelector('.close');
 addPhotosModalCloseButton.addEventListener('click', function () {
   addPhotosModal.style.display = 'none';
   modal.style.display = 'block';
+});
+
+window.addEventListener('click', function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+});
+
+const mainImages = document.getElementById('images');
+
+mainImages.addEventListener('click', function (event) {
+  if (event.target.tagName.toLowerCase() === 'img') {
+    const imageSrc = event.target.src;
+    const deleteButton = document.createElement('button');
+    deleteButton.innerHTML = 'Supprimer';
+    deleteButton.classList.add('delete-button');
+    deleteButton.addEventListener('click', function () {
+      const image = event.target.parentNode;
+      image.remove();
+      const modalImages = document.querySelectorAll('.image-container img');
+      modalImages.forEach(modalImage => {
+        if (modalImage.src === imageSrc) {
+          modalImage.parentNode.remove();
+        }
+      });
+    });
+    event.target.parentNode.appendChild(deleteButton);
+  }
 });
