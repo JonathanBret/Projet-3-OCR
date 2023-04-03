@@ -14,11 +14,21 @@ fetch('http://localhost:5678/api/works')
       figure.appendChild(text);
 
       document.querySelectorAll('.gallery').forEach(div => {
-        div.appendChild(figure);
+        let images = div.querySelectorAll('img');
+        let imageExists = false;
+        images.forEach(img => {
+          if (img.src === image.src) {
+            imageExists = true;
+          }
+        });
+        if (!imageExists) {
+          div.appendChild(figure);
+        }
       });
     });
   })
   .catch(error => console.error(error));
+
 
 //filtre
 const apiUrl = 'http://localhost:5678/api/works';
@@ -218,22 +228,74 @@ mainImages.addEventListener('click', function (event) {
   }
 });
 
-const addPhotosFileInput = document.getElementById('photo-file');
+const photoFile = document.getElementById('photo-file');
+const fileLabel = document.querySelector('label[for="photo-file"]');
+const previewContainer = document.getElementById('preview-container');
+const photoTitle = document.getElementById('photo-title');
+const photoCategory = document.getElementById('photo-category');
+const submitButton = document.querySelector('button[type="submit"]');
+const photoGallery = document.querySelector('.gallery');
 
-addPhotosFileInput.addEventListener('change', function () {
-  const file = addPhotosFileInput.files[0];
+// Ajouter un événement "change" à chaque champ de saisie
+photoFile.addEventListener('change', updateButtonColor);
+photoTitle.addEventListener('change', updateButtonColor);
+photoCategory.addEventListener('change', updateButtonColor);
+
+function updateButtonColor() {
+  // Vérifier si les champs sont remplis
+  if (photoFile.value && photoTitle.value && photoCategory.value) {
+    // Changer la couleur du bouton
+    submitButton.style.backgroundColor = '#1D6154';
+  } else {
+    submitButton.style.backgroundColor = 'gray';
+  }
+}
+
+// Ajouter un événement "submit" au formulaire
+document.querySelector('form').addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  // Récupérer l'image sélectionnée
+  const file = photoFile.files[0];
   const reader = new FileReader();
 
-  reader.addEventListener('load', function () {
-    const imageUrl = reader.result;
-    const photoPreview = document.createElement('img');
-    photoPreview.src = imageUrl;
-    photoPreview.classList.add('photo-preview');
-    const addPhotosForm = document.querySelector('#add-photos-modal form');
-    addPhotosForm.insertBefore(photoPreview, addPhotosForm.childNodes[3]);
-  });
+  // Mettre à jour la modale avec la nouvelle image
+  reader.onloadend = function () {
+    previewContainer.innerHTML = '<img src="' + reader.result + '" alt="preview">';
+  }
 
   if (file) {
     reader.readAsDataURL(file);
+  } else {
+    previewContainer.innerHTML = '';
   }
+
+  // Créer un nouvel élément de photo
+  const newPhoto = document.createElement('div');
+  newPhoto.classList.add('gallery-item');
+
+  const newPhotoImg = document.createElement('img');
+  newPhotoImg.src = previewContainer.querySelector('img').src;
+  newPhotoImg.alt = photoTitle.value;
+  newPhoto.appendChild(newPhotoImg);
+
+  const newPhotoText = document.createElement('div');
+  newPhotoText.classList.add('gallery-item-text');
+
+  const newPhotoTitle = document.createTextNode(photoTitle.value);
+  newPhotoText.appendChild(newPhotoTitle);
+
+  newPhoto.appendChild(newPhotoText);
+
+  // Ajouter la nouvelle photo à la galerie
+  photoGallery.appendChild(newPhoto);
+
+  // Effacer les champs du formulaire et la modale
+  photoFile.value = '';
+  photoTitle.value = '';
+  photoCategory.value = '';
+  previewContainer.innerHTML = '';
+
+  // Mettre à jour la couleur du bouton de soumission
+  submitButton.style.backgroundColor = 'gray';
 });
