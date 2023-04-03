@@ -251,15 +251,12 @@ function updateButtonColor() {
   }
 }
 
-// Ajouter un événement "submit" au formulaire
 document.querySelector('form').addEventListener('submit', function (event) {
   event.preventDefault();
 
-  // Récupérer l'image sélectionnée
   const file = photoFile.files[0];
   const reader = new FileReader();
 
-  // Mettre à jour la modale avec la nouvelle image
   reader.onloadend = function () {
     previewContainer.innerHTML = '<img src="' + reader.result + '" alt="preview">';
   }
@@ -270,7 +267,6 @@ document.querySelector('form').addEventListener('submit', function (event) {
     previewContainer.innerHTML = '';
   }
 
-  // Créer un nouvel élément de photo
   const newPhoto = document.createElement('div');
   newPhoto.classList.add('gallery-item');
 
@@ -287,15 +283,12 @@ document.querySelector('form').addEventListener('submit', function (event) {
 
   newPhoto.appendChild(newPhotoText);
 
-  // Ajouter la nouvelle photo à la galerie
   photoGallery.appendChild(newPhoto);
 
-  // Effacer les champs du formulaire et la modale
   photoFile.value = '';
   photoTitle.value = '';
   photoCategory.value = '';
   previewContainer.innerHTML = '';
 
-  // Mettre à jour la couleur du bouton de soumission
   submitButton.style.backgroundColor = 'gray';
 });
