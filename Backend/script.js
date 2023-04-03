@@ -217,3 +217,23 @@ mainImages.addEventListener('click', function (event) {
     event.target.parentNode.appendChild(deleteButton);
   }
 });
+
+const addPhotosFileInput = document.getElementById('photo-file');
+
+addPhotosFileInput.addEventListener('change', function () {
+  const file = addPhotosFileInput.files[0];
+  const reader = new FileReader();
+
+  reader.addEventListener('load', function () {
+    const imageUrl = reader.result;
+    const photoPreview = document.createElement('img');
+    photoPreview.src = imageUrl;
+    photoPreview.classList.add('photo-preview');
+    const addPhotosForm = document.querySelector('#add-photos-modal form');
+    addPhotosForm.insertBefore(photoPreview, addPhotosForm.childNodes[3]);
+  });
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
