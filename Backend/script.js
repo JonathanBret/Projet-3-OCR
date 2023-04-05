@@ -88,7 +88,7 @@ init();
 //login opérationnel
 const authorizedUser = JSON.parse(localStorage.getItem('authorizedUser'));
 
-if (authorizedUser) {
+if (authorizedUser && authorizedUser.isAdmin) {
   console.log(authorizedUser);
 
   const elements = document.querySelectorAll('.edit');
@@ -134,80 +134,100 @@ if (authorizedUser) {
     publierChangements.textContent = 'Publier les changements';
     toolbar.appendChild(publierChangements);
 
+    const deconnexion = document.createElement('button');
+    deconnexion.textContent = 'Déconnexion';
+    toolbar.appendChild(deconnexion);
+
     document.body.appendChild(toolbar);
 
     toolbar.style.display = 'flex';
 
-
-  });
-
-} else {
-  alert('Accès non autorisé');
-}
-
-//modale
-const editButtons = document.querySelectorAll('.edit');
-const addPhotosButton = document.querySelector('.add-photos');
-const modal = document.getElementById('modal');
-const modalContent = document.getElementById('images');
-const addPhotosModal = document.getElementById('add-photos-modal');
-
-editButtons.forEach(editButton => {
-  editButton.addEventListener('click', function () {
-    modalContent.innerHTML = '';
-
-    const images = document.querySelectorAll('.gallery-item img');
-
-    images.forEach(image => {
-      const imageContainer = document.createElement('div');
-      imageContainer.classList.add('image-container');
-
-      const img = document.createElement('img');
-      img.src = image.src;
-      imageContainer.appendChild(img);
-
-      const deleteIcon = document.createElement('i');
-      deleteIcon.classList.add('fas', 'fa-trash');
-      deleteIcon.addEventListener('click', function () {
-        const image = event.target.parentNode;
-        const imageSrc = image.querySelector('img').src;
-        image.remove();
-        const mainImages = document.querySelectorAll('.gallery-item img');
-        mainImages.forEach(mainImage => {
-          if (mainImage.src === imageSrc) {
-            mainImage.parentNode.remove();
-          }
-        });
-      });
-      imageContainer.appendChild(deleteIcon);
-
-      modalContent.appendChild(imageContainer);
+    deconnexion.addEventListener('click', () => {
+      localStorage.removeItem('authorizedUser');
+      window.location.href = 'index.html';
     });
 
-    modal.style.display = 'block';
   });
-});
+
+}
+
+
+
+//modale
+if (authorizedUser && authorizedUser.isAdmin) {
+  const editButtons = document.querySelectorAll('.edit');
+  const addPhotosButton = document.querySelector('.add-photos');
+  const modal = document.getElementById('modal');
+  const modalContent = document.getElementById('images');
+  const addPhotosModal = document.getElementById('add-photos-modal');
+  const closeBtn = document.querySelector('.close');
+
+  editButtons.forEach(editButton => {
+    editButton.addEventListener('click', function () {
+      modalContent.innerHTML = '';
+
+      const images = document.querySelectorAll('.gallery-item img');
+
+      images.forEach(image => {
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('image-container');
+
+        const img = document.createElement('img');
+        img.src = image.src;
+        imageContainer.appendChild(img);
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.classList.add('fas', 'fa-trash');
+        deleteIcon.addEventListener('click', function () {
+          const image = event.target.parentNode;
+          const imageSrc = image.querySelector('img').src;
+          image.remove();
+          const mainImages = document.querySelectorAll('.gallery-item img');
+          mainImages.forEach(mainImage => {
+            if (mainImage.src === imageSrc) {
+              mainImage.parentNode.remove();
+            }
+          });
+        });
+        imageContainer.appendChild(deleteIcon);
+
+        modalContent.appendChild(imageContainer);
+      });
+
+      modal.style.display = 'block';
+    });
+  });
+
+
+  closeBtn.addEventListener('click', function () {
+    modal.style.display = 'none';
+  });
+
+
+  window.addEventListener('click', function (event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  });
+}
+
+const addPhotosModal = document.getElementById('add-photos-modal');
+const addPhotosButton = document.querySelector('.add-photos');
+const addPhotosModalCloseButton = addPhotosModal.querySelector('.close');
 
 addPhotosButton.addEventListener('click', function () {
-  modal.style.display = 'none';
   addPhotosModal.style.display = 'block';
 });
 
-const addPhotosModalCloseButton = addPhotosModal.querySelector('.close');
-
 addPhotosModalCloseButton.addEventListener('click', function () {
   addPhotosModal.style.display = 'none';
-  modal.style.display = 'block';
 });
 
-window.addEventListener('click', function (event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-});
 
+
+//suppression image
 const mainImages = document.getElementById('images');
-
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MDcwOTE5MywiZXhwIjoxNjgwNzk1NTkzfQ.K7188T-ZxBxma7JuXUpcob4PQypNJYRuy3AOdIE65BM';
 mainImages.addEventListener('click', function (event) {
   if (event.target.tagName.toLowerCase() === 'img') {
     const imageSrc = event.target.src;
@@ -216,18 +236,35 @@ mainImages.addEventListener('click', function (event) {
     deleteButton.classList.add('delete-button');
     deleteButton.addEventListener('click', function () {
       const image = event.target.parentNode;
-      image.remove();
-      const modalImages = document.querySelectorAll('.image-container img');
-      modalImages.forEach(modalImage => {
-        if (modalImage.src === imageSrc) {
-          modalImage.parentNode.remove();
-        }
-      });
+      const imageId = image.dataset.id;
+      fetch(`http://localhost:5678/api/works/{id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Une erreur s\'est produite lors de la suppression de l\'image');
+          }
+          image.remove();
+          const modalImages = document.querySelectorAll('.image-container img');
+          modalImages.forEach(modalImage => {
+            if (modalImage.src === imageSrc) {
+              modalImage.parentNode.remove();
+            }
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
     });
     event.target.parentNode.appendChild(deleteButton);
   }
 });
 
+
+//ajouter image 2e modale
 const photoFile = document.getElementById('photo-file');
 const fileLabel = document.querySelector('label[for="photo-file"]');
 const previewContainer = document.getElementById('preview-container');
@@ -236,59 +273,61 @@ const photoCategory = document.getElementById('photo-category');
 const submitButton = document.querySelector('button[type="submit"]');
 const photoGallery = document.querySelector('.gallery');
 
-// Ajouter un événement "change" à chaque champ de saisie
+const newApiUrl = 'http://localhost:5678/api/works';
+
 photoFile.addEventListener('change', updateButtonColor);
 photoTitle.addEventListener('change', updateButtonColor);
 photoCategory.addEventListener('change', updateButtonColor);
 
 function updateButtonColor() {
-  // Vérifier si les champs sont remplis
   if (photoFile.value && photoTitle.value && photoCategory.value) {
-    // Changer la couleur du bouton
     submitButton.style.backgroundColor = '#1D6154';
   } else {
     submitButton.style.backgroundColor = 'gray';
   }
 }
 
-document.querySelector('form').addEventListener('submit', function (event) {
+document.querySelector('form').addEventListener('submit', async function (event) {
   event.preventDefault();
 
   const file = photoFile.files[0];
-  const reader = new FileReader();
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('title', photoTitle.value);
+  formData.append('category', photoCategory.value);
 
-  reader.onloadend = function () {
-    previewContainer.innerHTML = '<img src="' + reader.result + '" alt="preview">';
-  }
+  try {
+    const response = await fetch(newApiUrl, {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json();
 
-  if (file) {
-    reader.readAsDataURL(file);
-  } else {
+    const newPhoto = document.createElement('div');
+    newPhoto.classList.add('gallery-item');
+
+    const newPhotoImg = document.createElement('img');
+    newPhotoImg.src = data.imageUrl;
+    newPhotoImg.alt = data.title;
+    newPhoto.appendChild(newPhotoImg);
+
+    const newPhotoText = document.createElement('div');
+    newPhotoText.classList.add('gallery-item-text');
+
+    const newPhotoTitle = document.createTextNode(data.title);
+    newPhotoText.appendChild(newPhotoTitle);
+
+    newPhoto.appendChild(newPhotoText);
+
+    photoGallery.appendChild(newPhoto);
+
+    photoFile.value = '';
+    photoTitle.value = '';
+    photoCategory.value = '';
     previewContainer.innerHTML = '';
+
+    submitButton.style.backgroundColor = 'gray';
+  } catch (error) {
+    console.error(error);
   }
-
-  const newPhoto = document.createElement('div');
-  newPhoto.classList.add('gallery-item');
-
-  const newPhotoImg = document.createElement('img');
-  newPhotoImg.src = previewContainer.querySelector('img').src;
-  newPhotoImg.alt = photoTitle.value;
-  newPhoto.appendChild(newPhotoImg);
-
-  const newPhotoText = document.createElement('div');
-  newPhotoText.classList.add('gallery-item-text');
-
-  const newPhotoTitle = document.createTextNode(photoTitle.value);
-  newPhotoText.appendChild(newPhotoTitle);
-
-  newPhoto.appendChild(newPhotoText);
-
-  photoGallery.appendChild(newPhoto);
-
-  photoFile.value = '';
-  photoTitle.value = '';
-  photoCategory.value = '';
-  previewContainer.innerHTML = '';
-
-  submitButton.style.backgroundColor = 'gray';
 });

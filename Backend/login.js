@@ -1,6 +1,7 @@
 const authorizedUsers = [{
     email: "sophie.bluel@test.tld",
-    password: "S0phie"
+    password: "S0phie",
+    isAdmin: true // Ajoutez une propriété isAdmin pour identifier les admins
 }, ];
 
 const loginForm = document.getElementById('login');
@@ -23,7 +24,12 @@ loginForm.addEventListener('submit', function (event) {
 
         localStorage.setItem('authorizedUser', JSON.stringify(authorizedUser));
 
-        window.location.href = 'index.html';
+        // Redirige l'utilisateur vers la page d'administration s'il est un administrateur
+        if (authorizedUser.isAdmin) {
+            window.location.href = 'index.html';
+        } else {
+            window.location.href = 'index.html';
+        }
 
     } else {
         alert('Identifiants incorrects');
