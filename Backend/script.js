@@ -9,6 +9,8 @@ fetch('http://localhost:5678/api/works')
 
       image.src = item.imageUrl;
       text.textContent = item.title;
+      image.dataset.id = item.id;
+      figure.dataset.id = item.id;
 
       figure.appendChild(image);
       figure.appendChild(text);
@@ -28,6 +30,7 @@ fetch('http://localhost:5678/api/works')
     });
   })
   .catch(error => console.error(error));
+
 
 
 //filtre
@@ -155,6 +158,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTIyMjAxNCwiZXhwIjoxNjgxMzA4NDE0fQ.fjwoZJKhJ2e5zVqd4ufADvtsbrjrKDwUbD85q2tMf1s';
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
@@ -162,33 +166,64 @@ if (authorizedUser && authorizedUser.isAdmin) {
   const addPhotosModal = document.getElementById('add-photos-modal');
   const closeBtn = document.querySelector('.close');
 
+  function deleteImage(id, imageSrc) {
+    fetch(`http://localhost:5678/api/works/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Une erreur s\'est produite lors de la suppression de l\'image');
+        }
+        const mainImages = document.querySelectorAll('.gallery-item img');
+        mainImages.forEach(mainImage => {
+          if (mainImage.src === imageSrc) {
+            mainImage.parentNode.remove();
+          }
+        });
+        const modalImages = document.querySelectorAll('.image-container img');
+        modalImages.forEach(modalImage => {
+          if (modalImage.src === imageSrc) {
+            modalImage.parentNode.remove();
+          }
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
   editButtons.forEach(editButton => {
     editButton.addEventListener('click', function () {
       modalContent.innerHTML = '';
 
-      const images = document.querySelectorAll('.gallery-item img');
+      const galleryItems = document.querySelectorAll('.gallery-item');
 
-      images.forEach(image => {
+      galleryItems.forEach(galleryItem => {
         const imageContainer = document.createElement('div');
         imageContainer.classList.add('image-container');
+        imageContainer.dataset.id = galleryItem.dataset.id;
 
-        const img = document.createElement('img');
-        img.src = image.src;
-        imageContainer.appendChild(img);
+        const img = galleryItem.querySelector('img').cloneNode();
+        img.dataset.id = galleryItem.dataset.id;
+
+        img.addEventListener('click', function (event) {
+          const id = event.target.parentNode.dataset.id;
+          console.log('id', id);
+        });
 
         const deleteIcon = document.createElement('i');
         deleteIcon.classList.add('fas', 'fa-trash');
         deleteIcon.addEventListener('click', function () {
-          const image = event.target.parentNode;
-          const imageSrc = image.querySelector('img').src;
-          image.remove();
-          const mainImages = document.querySelectorAll('.gallery-item img');
-          mainImages.forEach(mainImage => {
-            if (mainImage.src === imageSrc) {
-              mainImage.parentNode.remove();
-            }
-          });
+          const id = imageContainer.dataset.id;
+          const imageSrc = img.src;
+          galleryItem.remove();
+          deleteImage(id, imageSrc);
         });
+
+        imageContainer.appendChild(img);
         imageContainer.appendChild(deleteIcon);
 
         modalContent.appendChild(imageContainer);
@@ -203,13 +238,17 @@ if (authorizedUser && authorizedUser.isAdmin) {
     modal.style.display = 'none';
   });
 
-
   window.addEventListener('click', function (event) {
-    if (event.target == modal) {
+    if (event.target === modal) {
       modal.style.display = 'none';
     }
   });
 }
+
+
+
+
+
 
 const addPhotosModal = document.getElementById('add-photos-modal');
 const addPhotosButton = document.querySelector('.add-photos');
@@ -226,42 +265,7 @@ addPhotosModalCloseButton.addEventListener('click', function () {
 
 
 //suppression image
-const mainImages = document.getElementById('images');
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MDcwOTE5MywiZXhwIjoxNjgwNzk1NTkzfQ.K7188T-ZxBxma7JuXUpcob4PQypNJYRuy3AOdIE65BM';
-mainImages.addEventListener('click', function (event) {
-  if (event.target.tagName.toLowerCase() === 'img') {
-    const imageSrc = event.target.src;
-    const deleteButton = document.createElement('button');
-    deleteButton.innerHTML = 'Supprimer';
-    deleteButton.classList.add('delete-button');
-    deleteButton.addEventListener('click', function () {
-      const image = event.target.parentNode;
-      const imageId = image.dataset.id;
-      fetch(`http://localhost:5678/api/works/{id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Une erreur s\'est produite lors de la suppression de l\'image');
-          }
-          image.remove();
-          const modalImages = document.querySelectorAll('.image-container img');
-          modalImages.forEach(modalImage => {
-            if (modalImage.src === imageSrc) {
-              modalImage.parentNode.remove();
-            }
-          });
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    });
-    event.target.parentNode.appendChild(deleteButton);
-  }
-});
+
 
 
 //ajouter image 2e modale
@@ -302,6 +306,10 @@ document.querySelector('form').addEventListener('submit', async function (event)
       body: formData,
     });
     const data = await response.json();
+
+    if (data.imageUrl === undefined) {
+      throw new Error("Image URL is undefined.");
+    }
 
     const newPhoto = document.createElement('div');
     newPhoto.classList.add('gallery-item');
