@@ -10,7 +10,9 @@ fetch('http://localhost:5678/api/works')
       image.src = item.imageUrl;
       text.textContent = item.title;
       image.dataset.id = item.id;
+      image.setAttribute('data-id', item.id);
       figure.dataset.id = item.id;
+      figure.setAttribute('data-id', item.id);
 
       figure.appendChild(image);
       figure.appendChild(text);
@@ -30,6 +32,7 @@ fetch('http://localhost:5678/api/works')
     });
   })
   .catch(error => console.error(error));
+
 
 
 
@@ -58,7 +61,7 @@ const displayData = (data) => {
   const gallery = document.querySelector('.gallery');
 
   gallery.innerHTML = data.map(item => `
-    <div class="gallery-item">
+    <div class="gallery-item" data-id="${item.id}">
       <img src="${item.imageUrl}" alt="${item.title}">
       <div class="gallery-item-text">${item.title}</div>
     </div>
@@ -158,7 +161,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTIyMjAxNCwiZXhwIjoxNjgxMzA4NDE0fQ.fjwoZJKhJ2e5zVqd4ufADvtsbrjrKDwUbD85q2tMf1s';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTQ2NjcxMCwiZXhwIjoxNjgxNTUzMTEwfQ.ScZ-RW8XU_s7Vemk0Mabv-DH90gIoovEOsmX9z8lpdw';
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
