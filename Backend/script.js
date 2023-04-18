@@ -161,7 +161,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTQ2NjcxMCwiZXhwIjoxNjgxNTUzMTEwfQ.ScZ-RW8XU_s7Vemk0Mabv-DH90gIoovEOsmX9z8lpdw';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTgyMDU5NSwiZXhwIjoxNjgxOTA2OTk1fQ.9e65qMk-eHPNlzvVdh8jej_ELr4SOgl6L3mgXWe3cjU';
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
@@ -265,80 +265,78 @@ addPhotosModalCloseButton.addEventListener('click', function () {
   addPhotosModal.style.display = 'none';
 });
 
-
-
-//suppression image
-
-
-
 //ajouter image 2e modale
+const photoForm = document.getElementById('photo-form');
 const photoFile = document.getElementById('photo-file');
-const fileLabel = document.querySelector('label[for="photo-file"]');
-const previewContainer = document.getElementById('preview-container');
 const photoTitle = document.getElementById('photo-title');
 const photoCategory = document.getElementById('photo-category');
 const submitButton = document.querySelector('button[type="submit"]');
+const previewContainer = document.getElementById('preview-container');
 const photoGallery = document.querySelector('.gallery');
+const newapiUrl = 'http://localhost:5678/api/works';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTgyMDU5NSwiZXhwIjoxNjgxOTA2OTk1fQ.9e65qMk-eHPNlzvVdh8jej_ELr4SOgl6L3mgXWe3cjU';
 
-const newApiUrl = 'http://localhost:5678/api/works';
-
-photoFile.addEventListener('change', updateButtonColor);
-photoTitle.addEventListener('change', updateButtonColor);
-photoCategory.addEventListener('change', updateButtonColor);
-
-function updateButtonColor() {
-  if (photoFile.value && photoTitle.value && photoCategory.value) {
-    submitButton.style.backgroundColor = '#1D6154';
-  } else {
-    submitButton.style.backgroundColor = 'gray';
-  }
-}
-
-document.querySelector('form').addEventListener('submit', async function (event) {
-  event.preventDefault();
+photoForm.addEventListener('submit', (e) => {
+  e.preventDefault();
 
   const file = photoFile.files[0];
+  const reader = new FileReader();
+
+  reader.onloadend = function () {
+    const previewImg = document.createElement('img');
+    previewImg.src = reader.result;
+    previewImg.alt = 'preview';
+    previewContainer.innerHTML = '';
+    previewContainer.appendChild(previewImg);
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    previewContainer.innerHTML = '';
+  }
+
   const formData = new FormData();
-  formData.append('file', file);
   formData.append('title', photoTitle.value);
   formData.append('category', photoCategory.value);
 
-  try {
-    const response = await fetch(newApiUrl, {
+  const imageUrl = URL.createObjectURL(file);
+  formData.append('imageUrl', imageUrl);
+
+  console.log('formData:', formData);
+
+  fetch(newapiUrl, {
       method: 'POST',
-      body: formData,
-    });
-    const data = await response.json();
+      headers: {
+        'Authorization': 'Bearer ' + token
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('data:', data);
+      const newPhoto = document.createElement('div');
+      newPhoto.classList.add('gallery-item');
 
-    if (data.imageUrl === undefined) {
-      throw new Error("Image URL is undefined.");
-    }
+      const newPhotoImg = document.createElement('img');
+      newPhotoImg.src = data.imageUrl;
+      newPhotoImg.alt = photoTitle.value;
+      newPhoto.appendChild(newPhotoImg);
 
-    const newPhoto = document.createElement('div');
-    newPhoto.classList.add('gallery-item');
+      const newPhotoText = document.createElement('div');
+      newPhotoText.classList.add('gallery-item-text');
+      const newPhotoTitle = document.createTextNode(photoTitle.value);
+      newPhotoText.appendChild(newPhotoTitle);
+      newPhoto.appendChild(newPhotoText);
 
-    const newPhotoImg = document.createElement('img');
-    newPhotoImg.src = data.imageUrl;
-    newPhotoImg.alt = data.title;
-    newPhoto.appendChild(newPhotoImg);
+      photoGallery.appendChild(newPhoto);
 
-    const newPhotoText = document.createElement('div');
-    newPhotoText.classList.add('gallery-item-text');
+      photoFile.value = '';
+      photoTitle.value = '';
+      photoCategory.value = '';
+      previewContainer.innerHTML = '';
 
-    const newPhotoTitle = document.createTextNode(data.title);
-    newPhotoText.appendChild(newPhotoTitle);
-
-    newPhoto.appendChild(newPhotoText);
-
-    photoGallery.appendChild(newPhoto);
-
-    photoFile.value = '';
-    photoTitle.value = '';
-    photoCategory.value = '';
-    previewContainer.innerHTML = '';
-
-    submitButton.style.backgroundColor = 'gray';
-  } catch (error) {
-    console.error(error);
-  }
+      submitButton.style.backgroundColor = 'gray';
+    })
+    .catch(error => console.error(error));
 });
