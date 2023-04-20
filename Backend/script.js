@@ -276,6 +276,18 @@ const photoGallery = document.querySelector('.gallery');
 const newapiUrl = 'http://localhost:5678/api/works';
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjAyNTQ3NSwiZXhwIjoxNjgyMTExODc1fQ.Jvqf6uOhrk7sh7nkGbREKdXpXOkaxYSBOb5ypGDcuoY';
 
+const inputs = [photoFile, photoTitle, photoCategory];
+
+inputs.forEach(input => {
+  input.addEventListener('input', () => {
+    if (inputs.every(input => input.value.trim() !== '')) {
+      submitButton.style.backgroundColor = '#1D6154';
+    } else {
+      submitButton.style.backgroundColor = 'gray';
+    }
+  });
+});
+
 photoForm.addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -288,6 +300,7 @@ photoForm.addEventListener('submit', (e) => {
     previewImg.alt = 'preview';
     previewContainer.innerHTML = '';
     previewContainer.appendChild(previewImg);
+    console.log(reader.result)
 
     const formData = new FormData();
     formData.append('title', photoTitle.value);
@@ -325,7 +338,6 @@ photoForm.addEventListener('submit', (e) => {
         photoCategory.value = '';
         previewContainer.innerHTML = '';
 
-        submitButton.style.backgroundColor = 'gray';
       })
       .catch(error => console.error(error));
   };
@@ -333,6 +345,6 @@ photoForm.addEventListener('submit', (e) => {
   if (file) {
     reader.readAsDataURL(file);
   } else {
-    previewContainer.innerHTML = '';
+    previewContainer.innerHTML = 'No image selected';
   }
 });
