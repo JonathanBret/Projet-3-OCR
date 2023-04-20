@@ -161,7 +161,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTgyMDU5NSwiZXhwIjoxNjgxOTA2OTk1fQ.9e65qMk-eHPNlzvVdh8jej_ELr4SOgl6L3mgXWe3cjU';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjAyNTQ3NSwiZXhwIjoxNjgyMTExODc1fQ.Jvqf6uOhrk7sh7nkGbREKdXpXOkaxYSBOb5ypGDcuoY';
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
@@ -274,7 +274,7 @@ const submitButton = document.querySelector('button[type="submit"]');
 const previewContainer = document.getElementById('preview-container');
 const photoGallery = document.querySelector('.gallery');
 const newapiUrl = 'http://localhost:5678/api/works';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MTgyMDU5NSwiZXhwIjoxNjgxOTA2OTk1fQ.9e65qMk-eHPNlzvVdh8jej_ELr4SOgl6L3mgXWe3cjU';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjAyNTQ3NSwiZXhwIjoxNjgyMTExODc1fQ.Jvqf6uOhrk7sh7nkGbREKdXpXOkaxYSBOb5ypGDcuoY';
 
 photoForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -288,6 +288,46 @@ photoForm.addEventListener('submit', (e) => {
     previewImg.alt = 'preview';
     previewContainer.innerHTML = '';
     previewContainer.appendChild(previewImg);
+
+    const formData = new FormData();
+    formData.append('title', photoTitle.value);
+    formData.append('category', photoCategory.value);
+    formData.append('image', file);
+
+    fetch(newapiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('data:', data);
+        const newPhoto = document.createElement('div');
+        newPhoto.classList.add('gallery-item');
+
+        const newPhotoImg = document.createElement('img');
+        newPhotoImg.src = data.imageUrl;
+        newPhotoImg.alt = photoTitle.value;
+        newPhoto.appendChild(newPhotoImg);
+
+        const newPhotoText = document.createElement('div');
+        newPhotoText.classList.add('gallery-item-text');
+        const newPhotoTitle = document.createTextNode(photoTitle.value);
+        newPhotoText.appendChild(newPhotoTitle);
+        newPhoto.appendChild(newPhotoText);
+
+        photoGallery.appendChild(newPhoto);
+
+        photoFile.value = '';
+        photoTitle.value = '';
+        photoCategory.value = '';
+        previewContainer.innerHTML = '';
+
+        submitButton.style.backgroundColor = 'gray';
+      })
+      .catch(error => console.error(error));
   };
 
   if (file) {
@@ -295,48 +335,4 @@ photoForm.addEventListener('submit', (e) => {
   } else {
     previewContainer.innerHTML = '';
   }
-
-  const formData = new FormData();
-  formData.append('title', photoTitle.value);
-  formData.append('category', photoCategory.value);
-
-  const imageUrl = URL.createObjectURL(file);
-  formData.append('imageUrl', imageUrl);
-
-  console.log('formData:', formData);
-
-  fetch(newapiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token
-      },
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('data:', data);
-      const newPhoto = document.createElement('div');
-      newPhoto.classList.add('gallery-item');
-
-      const newPhotoImg = document.createElement('img');
-      newPhotoImg.src = data.imageUrl;
-      newPhotoImg.alt = photoTitle.value;
-      newPhoto.appendChild(newPhotoImg);
-
-      const newPhotoText = document.createElement('div');
-      newPhotoText.classList.add('gallery-item-text');
-      const newPhotoTitle = document.createTextNode(photoTitle.value);
-      newPhotoText.appendChild(newPhotoTitle);
-      newPhoto.appendChild(newPhotoText);
-
-      photoGallery.appendChild(newPhoto);
-
-      photoFile.value = '';
-      photoTitle.value = '';
-      photoCategory.value = '';
-      previewContainer.innerHTML = '';
-
-      submitButton.style.backgroundColor = 'gray';
-    })
-    .catch(error => console.error(error));
 });
