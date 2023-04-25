@@ -102,12 +102,15 @@ if (authorizedUser && authorizedUser.isAdmin) {
   elements.forEach(element => {
     const editButton = document.createElement('button');
     editButton.textContent = 'Modifier';
+    editButton.style.paddingTop = '10px'
     editButton.classList.add('edit');
     element.appendChild(editButton);
 
     const icon = document.createElement('i');
-    icon.classList.add('fa-pen-square');
+    icon.style.paddingTop = '10px'
+    icon.classList.add('far', 'fa-edit');
     element.appendChild(icon);
+
 
     const toolbar = document.createElement('div');
     toolbar.style.width = '100%';
@@ -118,6 +121,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
     toolbar.style.alignItems = 'center';
     toolbar.style.position = 'fixed';
     toolbar.style.top = '0';
+    toolbar.style.left = '0';
     toolbar.style.padding = '10px';
 
 
@@ -142,6 +146,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
     const deconnexion = document.createElement('button');
     deconnexion.textContent = 'Déconnexion';
+    deconnexion.style.marginLeft = '50px'
     toolbar.appendChild(deconnexion);
 
     document.body.appendChild(toolbar);
@@ -161,7 +166,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjAyNTQ3NSwiZXhwIjoxNjgyMTExODc1fQ.Jvqf6uOhrk7sh7nkGbREKdXpXOkaxYSBOb5ypGDcuoY';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjQ1NzI5OSwiZXhwIjoxNjgyNTQzNjk5fQ.duYcEdA5zL0v9fqciIWn4aaRpJhc4mvIL6M0G28trWU';
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
@@ -274,7 +279,7 @@ const submitButton = document.querySelector('button[type="submit"]');
 const previewContainer = document.getElementById('preview-container');
 const photoGallery = document.querySelector('.gallery');
 const newapiUrl = 'http://localhost:5678/api/works';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjAyNTQ3NSwiZXhwIjoxNjgyMTExODc1fQ.Jvqf6uOhrk7sh7nkGbREKdXpXOkaxYSBOb5ypGDcuoY';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjQ1NzI5OSwiZXhwIjoxNjgyNTQzNjk5fQ.duYcEdA5zL0v9fqciIWn4aaRpJhc4mvIL6M0G28trWU';
 
 const inputs = [photoFile, photoTitle, photoCategory];
 
@@ -300,7 +305,7 @@ photoForm.addEventListener('submit', (e) => {
     previewImg.alt = 'preview';
     previewContainer.innerHTML = '';
     previewContainer.appendChild(previewImg);
-    console.log(reader.result)
+    console.log(previewContainer)
 
     const formData = new FormData();
     formData.append('title', photoTitle.value);
@@ -337,6 +342,7 @@ photoForm.addEventListener('submit', (e) => {
         photoTitle.value = '';
         photoCategory.value = '';
         previewContainer.innerHTML = '';
+
 
       })
       .catch(error => console.error(error));

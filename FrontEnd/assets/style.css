@@ -410,6 +410,11 @@ footer nav ul {
 	padding-right: 50px;
 }
 
+#portfolio>h2>i {
+	font-size: medium;
+	color: black;
+}
+
 .modal {
 	display: none;
 	position: fixed;
