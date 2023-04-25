@@ -253,11 +253,6 @@ if (authorizedUser && authorizedUser.isAdmin) {
   });
 }
 
-
-
-
-
-
 const addPhotosModal = document.getElementById('add-photos-modal');
 const addPhotosButton = document.querySelector('.add-photos');
 const addPhotosModalCloseButton = addPhotosModal.querySelector('.close');
@@ -305,7 +300,6 @@ photoForm.addEventListener('submit', (e) => {
     previewImg.alt = 'preview';
     previewContainer.innerHTML = '';
     previewContainer.appendChild(previewImg);
-    console.log(previewContainer)
 
     const formData = new FormData();
     formData.append('title', photoTitle.value);
@@ -346,6 +340,25 @@ photoForm.addEventListener('submit', (e) => {
 
       })
       .catch(error => console.error(error));
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    previewContainer.innerHTML = 'No image selected';
+  }
+});
+
+photoFile.addEventListener('change', (e) => {
+  const file = photoFile.files[0];
+  const reader = new FileReader();
+
+  reader.onloadend = function () {
+    const previewImg = document.createElement('img');
+    previewImg.src = reader.result;
+    previewImg.alt = 'preview';
+    previewContainer.innerHTML = '';
+    previewContainer.appendChild(previewImg);
   };
 
   if (file) {
