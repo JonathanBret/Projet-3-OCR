@@ -1,7 +1,7 @@
 const authorizedUsers = [{
     email: "sophie.bluel@test.tld",
     password: "S0phie",
-    isAdmin: true // Ajoutez une propriété isAdmin pour identifier les admins
+    isAdmin: true
 }, ];
 
 const loginForm = document.getElementById('login');
@@ -24,7 +24,6 @@ loginForm.addEventListener('submit', function (event) {
 
         localStorage.setItem('authorizedUser', JSON.stringify(authorizedUser));
 
-        // Redirige l'utilisateur vers la page d'administration s'il est un administrateur
         if (authorizedUser.isAdmin) {
             window.location.href = 'index.html';
         } else {

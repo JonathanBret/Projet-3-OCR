@@ -82,7 +82,6 @@ const displayData = (data) => {
   });
 };
 
-
 const init = async () => {
   const data = await getData();
   displayData(data);
@@ -147,6 +146,8 @@ if (authorizedUser && authorizedUser.isAdmin) {
     const deconnexion = document.createElement('button');
     deconnexion.textContent = 'Déconnexion';
     deconnexion.style.marginLeft = '50px'
+    deconnexion.style.width = '7%'
+    deconnexion.style.borderRadius = '10px'
     toolbar.appendChild(deconnexion);
 
     document.body.appendChild(toolbar);
@@ -157,16 +158,13 @@ if (authorizedUser && authorizedUser.isAdmin) {
       localStorage.removeItem('authorizedUser');
       window.location.href = 'index.html';
     });
-
   });
 
 }
 
-
-
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjQ1NzI5OSwiZXhwIjoxNjgyNTQzNjk5fQ.duYcEdA5zL0v9fqciIWn4aaRpJhc4mvIL6M0G28trWU';
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NDAxNTYxNSwiZXhwIjoxNjg0MTAyMDE1fQ.lwv1uNv-TG9dycfVaUsEBUsV2uBsPHqmywTbMn38Teg';
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
@@ -274,7 +272,7 @@ const submitButton = document.querySelector('button[type="submit"]');
 const previewContainer = document.getElementById('preview-container');
 const photoGallery = document.querySelector('.gallery');
 const newapiUrl = 'http://localhost:5678/api/works';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4MjQ1NzI5OSwiZXhwIjoxNjgyNTQzNjk5fQ.duYcEdA5zL0v9fqciIWn4aaRpJhc4mvIL6M0G28trWU';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NDAxNTYxNSwiZXhwIjoxNjg0MTAyMDE1fQ.lwv1uNv-TG9dycfVaUsEBUsV2uBsPHqmywTbMn38Teg';
 
 const inputs = [photoFile, photoTitle, photoCategory];
 
@@ -295,12 +293,6 @@ photoForm.addEventListener('submit', (e) => {
   const reader = new FileReader();
 
   reader.onloadend = function () {
-    const previewImg = document.createElement('img');
-    previewImg.src = reader.result;
-    previewImg.alt = 'preview';
-    previewContainer.innerHTML = '';
-    previewContainer.appendChild(previewImg);
-
     const formData = new FormData();
     formData.append('title', photoTitle.value);
     formData.append('category', photoCategory.value);
