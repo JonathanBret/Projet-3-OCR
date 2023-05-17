@@ -101,15 +101,18 @@ if (authorizedUser && authorizedUser.isAdmin) {
   elements.forEach(element => {
     const editButton = document.createElement('button');
     editButton.textContent = 'Modifier';
-    editButton.style.paddingTop = '10px'
+    editButton.style.paddingTop = '10px';
+    editButton.style.paddingBottom = '30px'
     editButton.classList.add('edit');
     element.appendChild(editButton);
 
+    const filterElement = document.getElementById('filter');
+    filterElement.style.display = 'none';
+
     const icon = document.createElement('i');
-    icon.style.paddingTop = '10px'
+    icon.style.paddingTop = '10px';
     icon.classList.add('far', 'fa-edit');
     element.appendChild(icon);
-
 
     const toolbar = document.createElement('div');
     toolbar.style.width = '100%';
@@ -123,48 +126,44 @@ if (authorizedUser && authorizedUser.isAdmin) {
     toolbar.style.left = '0';
     toolbar.style.padding = '10px';
 
-
     const modeEdition = document.createElement('button');
-    modeEdition.style.paddingRight = '50px'
-    modeEdition.style.border = 'none'
-    modeEdition.style.backgroundColor = 'black'
-    modeEdition.style.color = "white"
-    modeEdition.style.fontSize = '16px'
-    modeEdition.style.width = '10%'
-    modeEdition.style.cursor = 'pointer'
+    modeEdition.style.paddingRight = '50px';
+    modeEdition.style.border = 'none';
+    modeEdition.style.backgroundColor = 'black';
+    modeEdition.style.color = 'white';
+    modeEdition.style.fontSize = '16px';
+    modeEdition.style.width = '10%';
+    modeEdition.style.cursor = 'pointer';
     modeEdition.textContent = 'Mode édition';
     toolbar.appendChild(modeEdition);
 
     const publierChangements = document.createElement('button');
-    publierChangements.style.padding = '7px'
-    publierChangements.style.backgroundColor = 'white'
-    publierChangements.style.borderRadius = '15px'
-    publierChangements.style.width = '12%'
+    publierChangements.style.padding = '7px';
+    publierChangements.style.backgroundColor = 'white';
+    publierChangements.style.borderRadius = '15px';
+    publierChangements.style.width = '12%';
     publierChangements.textContent = 'Publier les changements';
     toolbar.appendChild(publierChangements);
 
-    const deconnexion = document.createElement('button');
-    deconnexion.textContent = 'Déconnexion';
-    deconnexion.style.marginLeft = '50px'
-    deconnexion.style.width = '7%'
-    deconnexion.style.borderRadius = '10px'
-    toolbar.appendChild(deconnexion);
-
     document.body.appendChild(toolbar);
-
     toolbar.style.display = 'flex';
 
-    deconnexion.addEventListener('click', () => {
-      localStorage.removeItem('authorizedUser');
-      window.location.href = 'index.html';
-    });
-  });
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+      loginButton.textContent = 'Logout';
 
+      loginButton.addEventListener('click', () => {
+        localStorage.removeItem('authorizedUser');
+        window.location.href = 'login.html';
+      });
+    }
+  });
 }
 
 //modale
 if (authorizedUser && authorizedUser.isAdmin) {
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NDAxNTYxNSwiZXhwIjoxNjg0MTAyMDE1fQ.lwv1uNv-TG9dycfVaUsEBUsV2uBsPHqmywTbMn38Teg';
+  const token = JSON.parse(localStorage.getItem('authorizedUser')).token;
+  console.log(token);
   const editButtons = document.querySelectorAll('.edit');
   const addPhotosButton = document.querySelector('.add-photos');
   const modal = document.getElementById('modal');
@@ -211,6 +210,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
         const imageContainer = document.createElement('div');
         imageContainer.classList.add('image-container');
         imageContainer.dataset.id = galleryItem.dataset.id;
+
 
         const img = galleryItem.querySelector('img').cloneNode();
         img.dataset.id = galleryItem.dataset.id;
@@ -272,7 +272,8 @@ const submitButton = document.querySelector('button[type="submit"]');
 const previewContainer = document.getElementById('preview-container');
 const photoGallery = document.querySelector('.gallery');
 const newapiUrl = 'http://localhost:5678/api/works';
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NDAxNTYxNSwiZXhwIjoxNjg0MTAyMDE1fQ.lwv1uNv-TG9dycfVaUsEBUsV2uBsPHqmywTbMn38Teg';
+const token = JSON.parse(localStorage.getItem('authorizedUser')).token;
+console.log(token);
 
 const inputs = [photoFile, photoTitle, photoCategory];
 

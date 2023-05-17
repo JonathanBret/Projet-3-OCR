@@ -178,6 +178,10 @@ h2 {
 	color: #1D6154
 }
 
+.home-button {
+	text-decoration: none;
+}
+
 nav ul {
 	display: flex;
 	align-items: center;
@@ -336,6 +340,7 @@ li:hover {
 	width: 100%;
 
 }
+
 
 .gallery-item {
 	width: 100%;
