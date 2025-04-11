@@ -154,7 +154,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
 
       loginButton.addEventListener('click', () => {
         localStorage.removeItem('authorizedUser');
-        window.location.href = 'login.html';
+        window.location.href = './login.html';
       });
     }
   });
