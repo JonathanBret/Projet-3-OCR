@@ -39,7 +39,7 @@ loginForm.addEventListener('submit', function (event) {
 });
 
 function authenticateUser(credentials) {
-    return fetch('http://localhost:5678/api/users/login', {
+    return fetch('https://sophie-bluel-gnij.onrender.com/api/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

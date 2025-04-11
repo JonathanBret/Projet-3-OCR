@@ -1,5 +1,5 @@
 //afficher les photos
-fetch('http://localhost:5678/api/works')
+fetch('https://sophie-bluel-gnij.onrender.com/api/works')
   .then(response => response.json())
   .then(data => {
     data.forEach(item => {
@@ -37,7 +37,7 @@ fetch('http://localhost:5678/api/works')
 
 
 //filtre
-const apiUrl = 'http://localhost:5678/api/works';
+const apiUrl = 'https://sophie-bluel-gnij.onrender.com/api/works';
 
 const getData = async () => {
   try {
@@ -172,7 +172,7 @@ if (authorizedUser && authorizedUser.isAdmin) {
   const closeBtn = document.querySelector('.close');
 
   function deleteImage(id, imageSrc) {
-    fetch(`http://localhost:5678/api/works/${id}`, {
+    fetch(`https://sophie-bluel-gnij.onrender.com/api/works/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -271,7 +271,7 @@ const photoCategory = document.getElementById('photo-category');
 const submitButton = document.querySelector('button[type="submit"]');
 const previewContainer = document.getElementById('preview-container');
 const photoGallery = document.querySelector('.gallery');
-const newapiUrl = 'http://localhost:5678/api/works';
+const newapiUrl = 'https://sophie-bluel-gnij.onrender.com/api/works';
 const token = JSON.parse(localStorage.getItem('authorizedUser')).token;
 console.log(token);
 
